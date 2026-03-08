@@ -1,7 +1,22 @@
-import Link from "next/link";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 import { Material } from "@/types";
+
+function hasValidFileUrl(fileUrl: unknown): fileUrl is string {
+  if (typeof fileUrl !== "string") return false;
+
+  const trimmed = fileUrl.trim();
+  if (!trimmed) return false;
+
+  if (trimmed.startsWith("/")) return true;
+
+  try {
+    const parsed = new URL(trimmed);
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
 
 const fallbackMaterials: Material[] = [
   {
@@ -35,9 +50,18 @@ export default async function AreaEducativaPage() {
           <article key={material.id} className="rounded-xl border border-cerrado-200 bg-white p-4">
             <h3 className="font-semibold">{material.title}</h3>
             <p className="text-sm text-cerrado-700">{material.description}</p>
-            <Link href={material.file_url} className="mt-2 inline-block text-sm font-medium text-cerrado-700 underline">
-              Download ({material.category})
-            </Link>
+            {hasValidFileUrl(material.file_url) ? (
+              <a
+                href={material.file_url}
+                className="mt-2 inline-block text-sm font-medium text-cerrado-700 underline"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Download ({material.category})
+              </a>
+            ) : (
+              <span className="mt-2 inline-block text-sm font-medium text-cerrado-400">Arquivo indisponível</span>
+            )}
           </article>
         ))}
       </div>
