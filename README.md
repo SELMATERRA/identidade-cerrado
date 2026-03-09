@@ -108,3 +108,4 @@ Acesse: `http://localhost:3000`
 - Recuperação de senha
 - Edição/remoção de conteúdos no admin
 - Métricas de uso e progresso de estudantes
+- trigger redeploy
